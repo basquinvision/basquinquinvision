@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #070707;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #070707;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  color: #070707;
+  background: #b89a61;
+}
+
+/* Keep native dropdown options readable on every OS. */
+select option {
+  color: #070707;
+  background: #ffffff;
+}
+
+/* Visible keyboard focus without cluttering mouse interaction. */
+:focus-visible {
+  outline: 2px solid #b89a61;
+  outline-offset: 3px;
+}
+
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(238, 233, 223, 0.9);
+}
+
+.text-outline-red {
+  color: transparent;
+  -webkit-text-stroke: 1px #bc3028;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
