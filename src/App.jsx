@@ -3,22 +3,27 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import BrandIntro from "./components/BrandIntro";
 import StatsBar from "./components/StatsBar";
+import TrustStrip from "./components/TrustStrip";
 import ServiceAreas from "./components/ServiceAreas";
 import Services from "./components/Services";
 import FeaturedWork from "./components/FeaturedWork";
 import WeddingsBanner from "./components/WeddingsBanner";
 import BookingPackages from "./components/BookingPackages";
+import BookingSteps from "./components/BookingSteps";
 import Contact from "./components/Contact";
 import WeddingSite from "./components/WeddingSite";
 import { applySeo, mainSeo } from "./utils/seo";
 import {
   brand,
+  addOns,
+  bookingSteps,
   bookingPackages,
   featuredProjects,
   serviceAreas,
   services,
   socialLinks,
   stats,
+  trustPoints,
   weddingPromo,
 } from "./data/filmData";
 
@@ -61,12 +66,14 @@ export default function App() {
       <main>
         <Hero brand={brand} />
         <StatsBar stats={stats} />
+        <TrustStrip points={trustPoints} />
         <BrandIntro brand={brand} />
         <ServiceAreas areas={serviceAreas} />
         <Services services={services} />
         <FeaturedWork projects={featuredProjects} />
         <WeddingsBanner promo={weddingPromo} />
-        <BookingPackages packages={bookingPackages} />
+        <BookingPackages packages={bookingPackages} addOns={addOns} />
+        <BookingSteps steps={bookingSteps} />
         <Contact email={brand.email} socials={socialLinks} responseNote={brand.responseNote} />
       </main>
       <footer className="border-t border-white/10 bg-ink px-5 py-12 sm:px-8 lg:px-12">
