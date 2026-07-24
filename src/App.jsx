@@ -13,6 +13,7 @@ import BookingSteps from "./components/BookingSteps";
 import Contact from "./components/Contact";
 import WeddingSite from "./components/WeddingSite";
 import ClientGalleryPortal from "./components/ClientGalleryPortal";
+import ProfilePortal from "./components/ProfilePortal";
 import { applySeo, mainSeo } from "./utils/seo";
 import {
   brand,
@@ -33,6 +34,7 @@ const footerLinks = [
   ["Work", "#work"],
   ["Packages", "#packages"],
   ["Client Galleries", "/#/galleries"],
+  ["Client Profile", "/#/profile"],
   ["Weddings", "/#/weddings"],
   ["Contact", "#contact"],
 ];
@@ -43,6 +45,8 @@ export default function App() {
     window.location.pathname.startsWith("/weddings") || window.location.hash.startsWith("#/weddings");
   const isGalleryPortal =
     window.location.pathname.startsWith("/galleries") || window.location.hash.startsWith("#/galleries");
+  const isProfilePortal =
+    window.location.pathname.startsWith("/profile") || window.location.hash.startsWith("#/profile");
 
   useEffect(() => {
     const updateRoute = () => setRouteKey(`${window.location.pathname}${window.location.hash}`);
@@ -66,6 +70,10 @@ export default function App() {
 
   if (isGalleryPortal) {
     return <ClientGalleryPortal />;
+  }
+
+  if (isProfilePortal) {
+    return <ProfilePortal />;
   }
 
   return (
