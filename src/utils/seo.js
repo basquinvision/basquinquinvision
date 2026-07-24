@@ -111,7 +111,7 @@ export const mainSeo = {
       "South Florida event photography, portrait, wedding, promo video, music video, and private gallery company.",
     areaServed: ["South Florida", "Miami", "Fort Lauderdale", "West Palm Beach"],
     url: siteUrl,
-    email: "bookbasquinvision@example.com",
+    email: "basquinvisonfilms@gmail.com",
     image: `${siteUrl}/images/flip-it-hero.png`,
     sameAs: [],
     serviceType: [
@@ -155,7 +155,7 @@ export const weddingSeo = {
     description: "South Florida wedding photography and cinematic wedding videography.",
     areaServed: ["South Florida", "Miami", "Fort Lauderdale", "West Palm Beach", "Florida Keys"],
     url: `${siteUrl}/weddings`,
-    email: "weddings@basquinvision.com",
+    email: "basquinvisonfilms@gmail.com",
     telephone: "(305) 555-0126",
     priceRange: "$3,500 – $12,000",
     image: `${siteUrl}/images/wedding-hero.png`,
