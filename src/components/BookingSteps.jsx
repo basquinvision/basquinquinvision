@@ -20,12 +20,20 @@ export default function BookingSteps({ steps }) {
           <p className="max-w-2xl font-display text-2xl font-bold uppercase leading-tight">
             Want it simple? Pick the package, send the details, and I’ll tell you the clean next step.
           </p>
-          <a
-            href="#contact"
-            className="inline-flex items-center justify-center gap-4 bg-bone px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-ink transition hover:-translate-y-1 hover:bg-gold"
-          >
-            Start booking <ArrowIcon />
-          </a>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <a
+              href="/#/galleries"
+              className="inline-flex items-center justify-center gap-4 border border-white/30 px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:-translate-y-1 hover:border-gold hover:text-gold"
+            >
+              Client galleries
+            </a>
+            <a
+              href="#contact"
+              className="inline-flex items-center justify-center gap-4 bg-bone px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-ink transition hover:-translate-y-1 hover:bg-gold"
+            >
+              Start booking <ArrowIcon />
+            </a>
+          </div>
         </div>
       </div>
     </section>
