@@ -21,9 +21,9 @@ export const film = {
 export const brand = {
   name: "Basquin Vision",
   founder: "Junior Basquin",
-  tagline: "Simple, cinematic photo and video coverage in South Florida.",
+  tagline: "Clean photos, cinematic video, and simple booking for South Florida events.",
   description:
-    "Basquin Vision helps regular people, artists, couples, and brands get clean photos, event coverage, promo videos, and wedding visuals without making the process complicated.",
+    "Basquin Vision helps regular people, artists, couples, and brands get sharp event photos, promo videos, wedding visuals, and private galleries without making the process complicated.",
   city: "South Florida",
   email: "bookbasquinvision@example.com",
   // Short line shown near booking CTAs — update as your calendar changes.
@@ -36,7 +36,14 @@ export const stats = [
   { value: "$150/hr", label: "photo coverage rate" },
   { value: "$1,200", label: "regular event photos" },
   { value: "48hr", label: "sneak peeks available" },
-  { value: "South FL", label: "local + travel" },
+  { value: "Private", label: "client galleries" },
+];
+
+export const trustPoints = [
+  "Clear prices before the shoot",
+  "Edited delivery link for every client",
+  "Photo, video, weddings, promos, and events",
+  "Based in South Florida",
 ];
 
 export const serviceAreas = [
@@ -111,23 +118,23 @@ export const featuredProjects = [
 export const services = [
   {
     title: "Event photography",
-    description: "Birthday parties, private events, business events, baby showers, launches, and celebrations.",
-    deliverable: "Edited online photo gallery",
+    description: "Birthdays, private events, business events, baby showers, launches, and celebrations.",
+    deliverable: "Edited online gallery + download link",
   },
   {
     title: "Portrait sessions",
-    description: "Clean pictures for yourself, your brand, graduation, couples, artists, or social media.",
-    deliverable: "Edited high-resolution photos",
+    description: "Clean pictures for your brand, graduation, couples, artists, family, or social media.",
+    deliverable: "High-resolution edits + web copies",
   },
   {
     title: "Promo videos",
-    description: "Short videos for artists, businesses, events, products, and social media campaigns.",
-    deliverable: "Finished video + social cuts",
+    description: "Short videos for artists, businesses, products, events, reels, and social campaigns.",
+    deliverable: "Finished edit + vertical social cuts",
   },
   {
     title: "Wedding photo + video",
-    description: "A separate wedding page with packages, albums, prints, canvases, and add-ons.",
-    deliverable: "Wedding gallery + film options",
+    description: "Wedding photo and film packages with albums, prints, canvases, and add-ons.",
+    deliverable: "Wedding gallery + highlight film options",
   },
 ];
 
@@ -136,20 +143,45 @@ export const bookingPackages = [
     title: "Quick Photos",
     price: "$450",
     timeline: "3 hours · photos only",
-    includes: ["Best for portraits or small moments", "Edited online gallery", "Based on $150/hr"],
+    bestFor: "Portraits, small parties, quick brand photos, or content days.",
+    includes: ["Up to 3 hours of coverage", "Edited online gallery", "High-res downloads", "Basic color cleanup"],
   },
   {
     title: "Regular Event",
     price: "$1,200",
     timeline: "8 hours · photos only",
     badge: "Most booked",
-    includes: ["Best for regular events", "Edited online gallery", "Sneak peeks available"],
+    bestFor: "Most birthdays, showers, private events, and business events.",
+    includes: ["Up to 8 hours of coverage", "Edited online gallery", "Sneak peeks available", "Private delivery link"],
   },
   {
     title: "Full Day Photos",
     price: "$1,800",
     timeline: "12 hours · photos only",
-    includes: ["Best for long events", "Full-day edited gallery", "Travel/custom add-ons available"],
+    bestFor: "Long events, multiple locations, and full-day coverage.",
+    includes: ["Up to 12 hours of coverage", "Full-day edited gallery", "Sneak peeks available", "Travel/custom add-ons available"],
+  },
+];
+
+export const addOns = [
+  { title: "Promo video", price: "Quote", detail: "Add a short recap, reel, or campaign video." },
+  { title: "Canvas prints", price: "$150+", detail: "Wall-ready canvas options for weddings and portraits." },
+  { title: "Photo prints", price: "$40+", detail: "Small print sets, enlargements, and keepsakes." },
+  { title: "Rush delivery", price: "Quote", detail: "Faster turnaround when the schedule allows." },
+];
+
+export const bookingSteps = [
+  {
+    title: "Send the date",
+    description: "Tell me the event type, location, date, hours, and what you need delivered.",
+  },
+  {
+    title: "Lock the package",
+    description: "I confirm availability, recommend the right package, and give you a clear quote.",
+  },
+  {
+    title: "Shoot + deliver",
+    description: "I cover the event and send your edited gallery or video through a private link.",
   },
 ];
 
