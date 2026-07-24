@@ -5,7 +5,7 @@ export const weddingBrand = {
   name: "Basquin Vision Weddings",
   owner: "Junior Basquin",
   city: "South Florida",
-  email: "weddings@basquinvision.com",
+  email: "basquinvisonfilms@gmail.com",
   phone: "(305) 555-0126",
   tagline: "Cinematic South Florida wedding films and photos for love stories with style.",
   heroImage: "/images/wedding-hero.png",

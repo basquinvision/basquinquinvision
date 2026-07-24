@@ -14,7 +14,7 @@ export const film = {
   heroImage: "/images/flip-it-hero.png",
   // REPLACE with your YouTube or Vimeo embed URL.
   trailerEmbedUrl: "",
-  contactEmail: "flipitfilm@example.com",
+  contactEmail: "basquinvisonfilms@gmail.com",
 };
 
 // EDIT these brand details for your full media company / creator website.
@@ -25,7 +25,7 @@ export const brand = {
   description:
     "Basquin Vision helps regular people, artists, couples, and brands get sharp event photos, promo videos, wedding visuals, and private galleries without making the process complicated.",
   city: "South Florida",
-  email: "bookbasquinvision@example.com",
+  email: "basquinvisonfilms@gmail.com",
   // Short line shown near booking CTAs — update as your calendar changes.
   availability: "Now booking South Florida dates",
   // Shown next to the contact form.
