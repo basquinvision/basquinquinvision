@@ -14,6 +14,9 @@ import Contact from "./components/Contact";
 import WeddingSite from "./components/WeddingSite";
 import ClientGalleryPortal from "./components/ClientGalleryPortal";
 import ProfilePortal from "./components/ProfilePortal";
+import AuthPortal from "./components/AuthPortal";
+import ClientPortalDashboard from "./components/ClientPortalDashboard";
+import AdminDashboard from "./components/AdminDashboard";
 import { applySeo, mainSeo } from "./utils/seo";
 import {
   brand,
@@ -34,7 +37,8 @@ const footerLinks = [
   ["Work", "#work"],
   ["Packages", "#packages"],
   ["Client Galleries", "/#/galleries"],
-  ["Client Profile", "/#/profile"],
+  ["Client Portal", "/#/portal"],
+  ["Admin", "/#/admin"],
   ["Weddings", "/#/weddings"],
   ["Contact", "#contact"],
 ];
@@ -47,6 +51,14 @@ export default function App() {
     window.location.pathname.startsWith("/galleries") || window.location.hash.startsWith("#/galleries");
   const isProfilePortal =
     window.location.pathname.startsWith("/profile") || window.location.hash.startsWith("#/profile");
+  const isLoginPortal =
+    window.location.pathname.startsWith("/login") || window.location.hash.startsWith("#/login");
+  const isSignupPortal =
+    window.location.pathname.startsWith("/signup") || window.location.hash.startsWith("#/signup");
+  const isClientPortal =
+    window.location.pathname.startsWith("/portal") || window.location.hash.startsWith("#/portal");
+  const isAdminPortal =
+    window.location.pathname.startsWith("/admin") || window.location.hash.startsWith("#/admin");
 
   useEffect(() => {
     const updateRoute = () => setRouteKey(`${window.location.pathname}${window.location.hash}`);
@@ -74,6 +86,22 @@ export default function App() {
 
   if (isProfilePortal) {
     return <ProfilePortal />;
+  }
+
+  if (isLoginPortal) {
+    return <AuthPortal mode="login" />;
+  }
+
+  if (isSignupPortal) {
+    return <AuthPortal mode="signup" />;
+  }
+
+  if (isClientPortal) {
+    return <ClientPortalDashboard />;
+  }
+
+  if (isAdminPortal) {
+    return <AdminDashboard />;
   }
 
   return (
