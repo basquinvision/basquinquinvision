@@ -17,6 +17,7 @@ import ProfilePortal from "./components/ProfilePortal";
 import AuthPortal from "./components/AuthPortal";
 import ClientPortalDashboard from "./components/ClientPortalDashboard";
 import AdminDashboard from "./components/AdminDashboard";
+import BackendSetupGuide from "./components/BackendSetupGuide";
 import { applySeo, mainSeo } from "./utils/seo";
 import {
   brand,
@@ -39,6 +40,7 @@ const footerLinks = [
   ["Client Galleries", "/#/galleries"],
   ["Client Portal", "/#/portal"],
   ["Admin", "/#/admin"],
+  ["Setup", "/#/setup"],
   ["Weddings", "/#/weddings"],
   ["Contact", "#contact"],
 ];
@@ -59,6 +61,8 @@ export default function App() {
     window.location.pathname.startsWith("/portal") || window.location.hash.startsWith("#/portal");
   const isAdminPortal =
     window.location.pathname.startsWith("/admin") || window.location.hash.startsWith("#/admin");
+  const isBackendSetup =
+    window.location.pathname.startsWith("/setup") || window.location.hash.startsWith("#/setup");
 
   useEffect(() => {
     const updateRoute = () => setRouteKey(`${window.location.pathname}${window.location.hash}`);
@@ -102,6 +106,10 @@ export default function App() {
 
   if (isAdminPortal) {
     return <AdminDashboard />;
+  }
+
+  if (isBackendSetup) {
+    return <BackendSetupGuide />;
   }
 
   return (
