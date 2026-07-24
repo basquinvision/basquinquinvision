@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Navbar from "./Navbar";
 import BackendNotice from "./BackendNotice";
-import { adminMetrics, adminNav, canvasPricing } from "../data/platformDemoData";
+import { adminMetrics, adminNav, canvasPricing, mediaPipeline, selectionWorkflows } from "../data/platformDemoData";
 import { applySeo } from "../utils/seo";
 
 export default function AdminDashboard() {
@@ -89,6 +89,36 @@ export default function AdminDashboard() {
                   <p className="mt-5 text-xs leading-6 text-white/55">
                     Supplier cost, retail price, sale price, markup, and gross margin are calculated in the database view.
                   </p>
+                </div>
+              </section>
+
+              <section id="media" className="mt-8 border border-white/15 bg-white/[.03] p-6">
+                <div className="grid gap-6 lg:grid-cols-[.9fr_1.1fr]">
+                  <div>
+                    <p className="text-[9px] uppercase tracking-cinema text-gold">Phase 2 media architecture</p>
+                    <h3 className="mt-3 font-display text-4xl font-black uppercase">Protected gallery pipeline</h3>
+                    <p className="mt-4 text-sm leading-7 text-white/55">
+                      Admin uploads will create metadata records, protected original storage keys, optimized preview
+                      keys, thumbnail keys, visibility rules, and download permissions. Original files are never meant
+                      to be exposed as permanent public URLs.
+                    </p>
+                    <div className="mt-6 grid gap-2">
+                      {selectionWorkflows.map((workflow) => (
+                        <div key={workflow} className="border border-white/10 bg-black/20 px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-white/60">
+                          Client selection collection: <span className="text-gold">{workflow}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {mediaPipeline.map((item) => (
+                      <article key={item.title} className="border border-white/10 bg-black/20 p-5">
+                        <p className="text-[9px] uppercase tracking-cinema text-gold">{item.status}</p>
+                        <h4 className="mt-3 font-display text-3xl font-black uppercase leading-none">{item.title}</h4>
+                        <p className="mt-3 text-xs leading-6 text-white/50">{item.detail}</p>
+                      </article>
+                    ))}
+                  </div>
                 </div>
               </section>
             </div>

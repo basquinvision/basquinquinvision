@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import BackendNotice from "./BackendNotice";
 import { ArrowIcon } from "./Icons";
 import { clearSession, getSessionUser } from "../lib/authClient";
-import { portalNav, demoProjects } from "../data/platformDemoData";
+import { portalNav, demoProjects, selectionWorkflows } from "../data/platformDemoData";
 import { applySeo } from "../utils/seo";
 
 export default function ClientPortalDashboard() {
@@ -103,6 +103,31 @@ export default function ClientPortalDashboard() {
                     <p className="mt-4 text-sm leading-6 text-white/55">Ready for database-backed records in Phase 1.</p>
                   </div>
                 ))}
+              </section>
+
+              <section id="my-galleries" className="mt-8 border border-white/15 bg-white/[.03] p-6">
+                <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+                  <div>
+                    <p className="text-[9px] uppercase tracking-cinema text-gold">My Galleries</p>
+                    <h3 className="mt-3 font-display text-4xl font-black uppercase">Selections workflow</h3>
+                    <p className="mt-4 max-w-2xl text-sm leading-7 text-white/55">
+                      Phase 2 prepares the client side for hearts, selections, authorized downloads, and polished
+                      proofing. The real database will let you see exactly which photos a client wants retouched,
+                      printed, downloaded, or placed into an album.
+                    </p>
+                    <a href="/#/galleries" className="mt-6 inline-flex items-center gap-4 border border-white/25 px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] transition hover:border-gold hover:text-gold">
+                      Open gallery workspace <ArrowIcon />
+                    </a>
+                  </div>
+                  <div className="grid gap-2">
+                    {selectionWorkflows.map((workflow) => (
+                      <div key={workflow} className="flex items-center justify-between border border-white/10 bg-black/20 px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-white/60">
+                        <span>{workflow}</span>
+                        <span className="text-gold">♡</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </section>
             </div>
           </div>

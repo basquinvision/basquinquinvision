@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import { ArrowIcon } from "./Icons";
 import { brand, serviceAreas, socialLinks } from "../data/filmData";
 import { clientGalleries, galleryAccessCodes, galleryProducts } from "../data/clientGalleryData";
+import { selectionWorkflows } from "../data/platformDemoData";
 import { applySeo } from "../utils/seo";
 import { useEffect } from "react";
 
@@ -29,6 +30,8 @@ export default function ClientGalleryPortal() {
   const [unlocked, setUnlocked] = useState(false);
   const [activeGalleryId, setActiveGalleryId] = useState(clientGalleries[0].id);
   const [selectedPhoto, setSelectedPhoto] = useState("");
+  const [favoriteCollection, setFavoriteCollection] = useState(selectionWorkflows[0]);
+  const [favoriteSelections, setFavoriteSelections] = useState({});
   const [selectedProduct, setSelectedProduct] = useState(galleryProducts[0].title);
   const [message, setMessage] = useState("");
   const [uploads, setUploads] = useState([]);
@@ -87,6 +90,23 @@ export default function ClientGalleryPortal() {
 
   function handleSetPricing() {
     setStatusMessage(`Prices set: ${digitalPrice} per download / ${galleryPrice} full gallery.`);
+  }
+
+  function toggleFavorite(photoTitle = selectedPhoto) {
+    if (!photoTitle) {
+      setStatusMessage("Pick a photo first, then add it to a selection collection.");
+      return;
+    }
+
+    setFavoriteSelections((current) => {
+      const currentCollection = current[favoriteCollection] || [];
+      const exists = currentCollection.includes(photoTitle);
+      const nextCollection = exists
+        ? currentCollection.filter((item) => item !== photoTitle)
+        : [...currentCollection, photoTitle];
+      return { ...current, [favoriteCollection]: nextCollection };
+    });
+    setStatusMessage(`${photoTitle} updated in ${favoriteCollection}.`);
   }
 
   function buildClientMessage() {
@@ -245,7 +265,9 @@ export default function ClientGalleryPortal() {
                         <p className="font-display text-xl font-black uppercase leading-none">{photo.title}</p>
                         <p className="mt-1 text-[9px] uppercase tracking-cinema text-white/40">{photo.tag}</p>
                       </div>
-                      <span className="text-gold">✦</span>
+                      <span className="text-gold">
+                        {(favoriteSelections[favoriteCollection] || []).includes(photo.title) ? "♥" : "♡"}
+                      </span>
                     </div>
                   </button>
                 ))}
@@ -272,6 +294,29 @@ export default function ClientGalleryPortal() {
                   </button>
                 ))}
               </div>
+              <div className="mt-6 border border-white/15 bg-black/20 p-4">
+                <p className="text-[8px] uppercase tracking-cinema text-white/55">Selection collection</p>
+                <select
+                  value={favoriteCollection}
+                  onChange={(event) => setFavoriteCollection(event.target.value)}
+                  className="mt-2 w-full border border-white/15 bg-ink px-4 py-3 text-white outline-none focus:border-gold"
+                >
+                  {selectionWorkflows.map((collection) => (
+                    <option key={collection} value={collection}>{collection}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => toggleFavorite()}
+                  className="mt-3 w-full border border-gold/35 px-4 py-3 text-[9px] font-bold uppercase tracking-[0.18em] text-gold transition hover:bg-gold hover:text-ink"
+                >
+                  {selectedPhoto ? `Heart ${selectedPhoto}` : "Pick photo to favorite"}
+                </button>
+                <p className="mt-3 text-xs leading-6 text-white/45">
+                  Phase 2 saves hearts/selections to the database so admin can see album choices, retouch picks,
+                  print choices, and final approvals.
+                </p>
+              </div>
               <label className="mt-5 block">
                 <span className="text-[8px] uppercase tracking-cinema text-white/55">Order note</span>
                 <textarea
@@ -291,7 +336,38 @@ export default function ClientGalleryPortal() {
               <p className="mt-4 text-xs leading-6 text-white/45">
                 Next step: connect Stripe so this button becomes instant checkout for downloads, prints, and canvases.
               </p>
+              <div className="mt-5 border border-white/15 bg-black/20 p-4 text-xs leading-6 text-white/55">
+                <p className="font-semibold uppercase tracking-[0.16em] text-white">Protected download plan</p>
+                <p className="mt-2">
+                  Originals stay private. Web-size, selected-image, full-gallery, and high-resolution downloads will use
+                  temporary signed links after admin grants permission.
+                </p>
+              </div>
             </aside>
+          </div>
+        </section>
+
+        <section className="bg-bone px-5 py-20 text-ink sm:px-8 lg:px-12 lg:py-28">
+          <div className="mx-auto max-w-[1350px]">
+            <p className="text-[9px] uppercase tracking-cinema text-blood/70">Client selections</p>
+            <h2 className="mt-4 font-display text-5xl font-black uppercase leading-none">Favorites board</h2>
+            <div className="mt-8 grid gap-4 md:grid-cols-5">
+              {selectionWorkflows.map((collection) => (
+                <article key={collection} className="border border-ink/15 bg-white p-5">
+                  <p className="text-[9px] uppercase tracking-cinema text-blood">{collection}</p>
+                  <p className="mt-4 font-display text-4xl font-black uppercase leading-none">
+                    {(favoriteSelections[collection] || []).length}
+                  </p>
+                  <div className="mt-4 space-y-2 text-xs leading-5 text-ink/55">
+                    {(favoriteSelections[collection] || []).length > 0 ? (
+                      favoriteSelections[collection].map((photo) => <p key={photo}>♥ {photo}</p>)
+                    ) : (
+                      <p>No selections yet.</p>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
