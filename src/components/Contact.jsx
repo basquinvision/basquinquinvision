@@ -52,11 +52,17 @@ export default function Contact({ email, socials, responseNote }) {
         <div className="mt-16 grid gap-14 border-t border-white/30 pt-12 lg:mt-20 lg:grid-cols-[.8fr_1.4fr] lg:gap-16">
           <div>
             <p className="max-w-md font-display text-3xl font-bold uppercase leading-tight">
-              Tell us what you need, the date, the location, and which package you want.
+              Tell me the date, the location, the hours, and what kind of coverage you want.
             </p>
             <p className="mt-5 max-w-md text-sm leading-7 text-white/55">
-              Based in South Florida and available for Miami, Fort Lauderdale, Palm Beach, the Florida Keys, and travel projects.
+              Based in South Florida. Available for Miami, Fort Lauderdale, Broward, Palm Beach, the Florida Keys, and
+              travel projects. If you are not sure what package fits, send the details and I’ll help you choose.
             </p>
+            <div className="mt-8 grid gap-3 text-[9px] uppercase tracking-cinema text-white/65">
+              <span className="border border-white/15 bg-black/15 px-4 py-3">✦ $450 quick photos</span>
+              <span className="border border-white/15 bg-black/15 px-4 py-3">✦ $1,200 regular event photos</span>
+              <span className="border border-white/15 bg-black/15 px-4 py-3">✦ $1,800 full-day photos</span>
+            </div>
             <a href={`mailto:${email}`} className="mt-8 inline-block border-b border-white pb-2 text-sm transition hover:border-gold hover:text-gold">
               {email}
             </a>

@@ -1,9 +1,9 @@
 import { ArrowIcon, PlayIcon } from "./Icons";
 
 const heroLinks = [
-  { label: "South Florida weddings", href: "/#/weddings" },
-  { label: "Music videos", href: "#services" },
-  { label: "Regular events", href: "#packages" },
+  { label: "Book event photos", href: "#packages" },
+  { label: "Wedding packages", href: "/#/weddings" },
+  { label: "Promo video quotes", href: "#contact" },
 ];
 
 export default function Hero({ brand }) {
@@ -35,8 +35,9 @@ export default function Hero({ brand }) {
             <p className="max-w-3xl font-display text-2xl font-semibold uppercase tracking-[0.02em] sm:text-4xl">
               {brand.tagline}
             </p>
-            <p className="mt-3 text-[9px] uppercase tracking-cinema text-white/45">
-              Weddings · music videos · events · artist promos · private media delivery
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/55">
+              Book straightforward photo and video coverage for birthdays, showers, business events, artist promos,
+              weddings, portraits, and private celebrations.
             </p>
           </div>
           <div className="flex flex-col gap-4 lg:items-end">
@@ -52,13 +53,13 @@ export default function Hero({ brand }) {
                 href="#contact"
                 className="group flex items-center justify-center gap-4 bg-crimson px-8 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:-translate-y-1 hover:bg-gold hover:text-ink"
               >
-                Book a shoot <ArrowIcon />
+                Check my date <ArrowIcon />
               </a>
               <a
-                href="#work"
+                href="#packages"
                 className="group flex items-center justify-center gap-3 border border-white/40 px-8 py-4 text-[10px] font-bold uppercase tracking-[0.2em] transition hover:-translate-y-1 hover:border-bone hover:bg-bone hover:text-ink"
               >
-                <PlayIcon /> View work
+                <PlayIcon /> See prices
               </a>
             </div>
           </div>
