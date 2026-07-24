@@ -7,6 +7,7 @@ const links = [
   ["Services", "#services"],
   ["Work", "#work"],
   ["Galleries", "/#/galleries"],
+  ["Profile", "/#/profile"],
   ["Weddings", "/#/weddings"],
   ["Packages", "#packages"],
 ];

@@ -32,6 +32,12 @@ export default function ClientGalleryPortal() {
   const [selectedProduct, setSelectedProduct] = useState(galleryProducts[0].title);
   const [message, setMessage] = useState("");
   const [uploads, setUploads] = useState([]);
+  const [uploadTitle, setUploadTitle] = useState("New Client Gallery");
+  const [clientEmail, setClientEmail] = useState("");
+  const [digitalPrice, setDigitalPrice] = useState("$25");
+  const [galleryPrice, setGalleryPrice] = useState("$199");
+  const [privateCode, setPrivateCode] = useState("BASQUIN");
+  const [statusMessage, setStatusMessage] = useState("");
 
   const activeGallery = useMemo(
     () => clientGalleries.find((gallery) => gallery.id === activeGalleryId) || clientGalleries[0],
@@ -70,6 +76,46 @@ export default function ClientGalleryPortal() {
       url: URL.createObjectURL(file),
     }));
     setUploads(previews);
+    if (previews.length > 0) {
+      setStatusMessage(`${previews.length} photo${previews.length === 1 ? "" : "s"} added to the preview.`);
+    }
+  }
+
+  const privateGalleryLink = `${window.location.origin}/#/galleries?code=${encodeURIComponent(privateCode || "BASQUIN")}`;
+
+  function handleSetPricing() {
+    setStatusMessage(`Prices set: ${digitalPrice} per download / ${galleryPrice} full gallery.`);
+  }
+
+  async function handleCopyPrivateLink() {
+    const text = `${privateGalleryLink}\nAccess code: ${privateCode || "BASQUIN"}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatusMessage("Private gallery link copied. You can paste it into a text or email.");
+    } catch {
+      setStatusMessage("Private link is ready below. Copy it manually if your browser blocks clipboard access.");
+    }
+  }
+
+  function buildPrivateLinkEmail() {
+    const subject = `Your Basquin Vision gallery — ${uploadTitle || "Client Gallery"}`;
+    const body = [
+      "Your Basquin Vision gallery is ready.",
+      "",
+      `Gallery: ${uploadTitle || "Client Gallery"}`,
+      `Private link: ${privateGalleryLink}`,
+      `Access code: ${privateCode || "BASQUIN"}`,
+      "",
+      "Ordering options:",
+      `Single digital download: ${digitalPrice}`,
+      `Full gallery download: ${galleryPrice}`,
+      "",
+      "Reply to this email with the photo names/numbers you want, or use the order button on the gallery page.",
+      "",
+      "— Junior Basquin / Basquin Vision",
+    ].join("\n");
+    const to = clientEmail.trim();
+    return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   return (
@@ -95,6 +141,12 @@ export default function ClientGalleryPortal() {
                 This page is ready for proofing and ordering. For full real uploads and card payments, connect cloud photo
                 storage and Stripe/checkout next.
               </p>
+              <a
+                href="/#/profile"
+                className="mt-6 inline-flex items-center gap-4 border border-white/25 px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] transition hover:border-gold hover:text-gold"
+              >
+                Create client profile <ArrowIcon />
+              </a>
               <form onSubmit={handleUnlock} className="mt-7 grid gap-3 sm:grid-cols-[1fr_auto]">
                 <label>
                   <span className="text-[8px] uppercase tracking-cinema text-white/55">Client access code</span>
@@ -234,11 +286,54 @@ export default function ClientGalleryPortal() {
                 <span className="text-outline italic">preview</span>
               </h2>
               <p className="mt-6 max-w-lg text-sm leading-7 text-white/60">
-                Drop photos here to preview how a client gallery will look. This preview stays on this device until real
-                cloud storage is connected.
+                Drop photos here to preview how a client gallery will look, set basic prices, and generate a private
+                link/email for the client. This preview stays on this device until real cloud storage is connected.
               </p>
             </div>
             <div className="border border-white/20 bg-black/15 p-6">
+              <div className="mb-5 grid gap-4 sm:grid-cols-2">
+                <label>
+                  <span className="text-[8px] uppercase tracking-cinema text-white/55">Gallery title</span>
+                  <input
+                    value={uploadTitle}
+                    onChange={(event) => setUploadTitle(event.target.value)}
+                    className={inputClasses}
+                  />
+                </label>
+                <label>
+                  <span className="text-[8px] uppercase tracking-cinema text-white/55">Client email</span>
+                  <input
+                    value={clientEmail}
+                    onChange={(event) => setClientEmail(event.target.value)}
+                    placeholder="client@email.com"
+                    className={inputClasses}
+                  />
+                </label>
+                <label>
+                  <span className="text-[8px] uppercase tracking-cinema text-white/55">Download price</span>
+                  <input
+                    value={digitalPrice}
+                    onChange={(event) => setDigitalPrice(event.target.value)}
+                    className={inputClasses}
+                  />
+                </label>
+                <label>
+                  <span className="text-[8px] uppercase tracking-cinema text-white/55">Full gallery price</span>
+                  <input
+                    value={galleryPrice}
+                    onChange={(event) => setGalleryPrice(event.target.value)}
+                    className={inputClasses}
+                  />
+                </label>
+                <label className="sm:col-span-2">
+                  <span className="text-[8px] uppercase tracking-cinema text-white/55">Private access code</span>
+                  <input
+                    value={privateCode}
+                    onChange={(event) => setPrivateCode(event.target.value.toUpperCase())}
+                    className={inputClasses}
+                  />
+                </label>
+              </div>
               <label className="flex min-h-52 cursor-pointer flex-col items-center justify-center border border-dashed border-white/30 bg-black/20 px-6 py-10 text-center transition hover:border-gold">
                 <span className="font-display text-3xl font-black uppercase">Choose photos</span>
                 <span className="mt-3 text-xs leading-6 text-white/55">JPG or PNG. This is a safe preview uploader.</span>
@@ -257,10 +352,34 @@ export default function ClientGalleryPortal() {
                   ))}
                 </div>
               )}
-              <div className="mt-6 grid gap-3 text-[9px] uppercase tracking-cinema text-white/60 sm:grid-cols-3">
-                <span className="border border-white/15 px-4 py-3">1. Upload photos</span>
-                <span className="border border-white/15 px-4 py-3">2. Set prices</span>
-                <span className="border border-white/15 px-4 py-3">3. Send private link</span>
+              <div className="mt-6 grid gap-3 text-[9px] uppercase tracking-cinema text-white/80 sm:grid-cols-3">
+                <button
+                  type="button"
+                  onClick={handleSetPricing}
+                  className="border border-white/15 px-4 py-3 text-left transition hover:border-gold hover:text-gold"
+                >
+                  1. Set prices
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyPrivateLink}
+                  className="border border-white/15 px-4 py-3 text-left transition hover:border-gold hover:text-gold"
+                >
+                  2. Copy private link
+                </button>
+                <a
+                  href={buildPrivateLinkEmail()}
+                  onClick={() => setStatusMessage("Opening email with private link. Hit send in your email app.")}
+                  className="border border-white/15 px-4 py-3 transition hover:border-gold hover:text-gold"
+                >
+                  3. Send private link
+                </a>
+              </div>
+              <div className="mt-5 border border-white/15 bg-black/20 p-4 text-xs leading-6 text-white/60">
+                <p className="font-semibold text-white">Private link preview:</p>
+                <p className="break-all text-gold">{privateGalleryLink}</p>
+                <p>Access code: {privateCode || "BASQUIN"}</p>
+                {statusMessage && <p className="mt-3 text-white/80">{statusMessage}</p>}
               </div>
             </div>
           </div>
