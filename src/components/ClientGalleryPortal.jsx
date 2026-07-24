@@ -33,7 +33,9 @@ export default function ClientGalleryPortal() {
   const [message, setMessage] = useState("");
   const [uploads, setUploads] = useState([]);
   const [uploadTitle, setUploadTitle] = useState("New Client Gallery");
+  const [clientName, setClientName] = useState("");
   const [clientEmail, setClientEmail] = useState("");
+  const [realGalleryUrl, setRealGalleryUrl] = useState("");
   const [digitalPrice, setDigitalPrice] = useState("$25");
   const [galleryPrice, setGalleryPrice] = useState("$199");
   const [privateCode, setPrivateCode] = useState("BASQUIN");
@@ -87,35 +89,51 @@ export default function ClientGalleryPortal() {
     setStatusMessage(`Prices set: ${digitalPrice} per download / ${galleryPrice} full gallery.`);
   }
 
-  async function handleCopyPrivateLink() {
-    const text = `${privateGalleryLink}\nAccess code: ${privateCode || "BASQUIN"}`;
-    try {
-      await navigator.clipboard.writeText(text);
-      setStatusMessage("Private gallery link copied. You can paste it into a text or email.");
-    } catch {
-      setStatusMessage("Private link is ready below. Copy it manually if your browser blocks clipboard access.");
-    }
-  }
-
-  function buildPrivateLinkEmail() {
-    const subject = `Your Basquin Vision gallery — ${uploadTitle || "Client Gallery"}`;
-    const body = [
-      "Your Basquin Vision gallery is ready.",
+  function buildClientMessage() {
+    return [
+      `Hey${clientName.trim() ? ` ${clientName.trim()}` : ""}, your Basquin Vision gallery is ready.`,
       "",
       `Gallery: ${uploadTitle || "Client Gallery"}`,
-      `Private link: ${privateGalleryLink}`,
-      `Access code: ${privateCode || "BASQUIN"}`,
+      `Photo link: ${realGalleryUrl.trim()}`,
       "",
       "Ordering options:",
       `Single digital download: ${digitalPrice}`,
       `Full gallery download: ${galleryPrice}`,
       "",
-      "Reply to this email with the photo names/numbers you want, or use the order button on the gallery page.",
+      "Reply with the photo names/numbers you want, or tell me if you want prints, canvases, or the full gallery.",
       "",
       "— Junior Basquin / Basquin Vision",
     ].join("\n");
+  }
+
+  async function handleCopyClientMessage() {
+    if (!realGalleryUrl.trim()) {
+      setStatusMessage("Add a real Dropbox, Google Drive, Pixieset, or online gallery link first. The preview photos only live on this device.");
+      return;
+    }
+    const text = buildClientMessage();
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatusMessage("Client message copied. Paste it into a text or email.");
+    } catch {
+      setStatusMessage("Client message is ready below. Copy it manually if your browser blocks clipboard access.");
+    }
+  }
+
+  function buildPrivateLinkEmail() {
+    const subject = `Your Basquin Vision gallery — ${uploadTitle || "Client Gallery"}`;
+    const body = buildClientMessage();
     const to = clientEmail.trim();
     return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+  function handleEmailRealGallery(event) {
+    if (!realGalleryUrl.trim()) {
+      event.preventDefault();
+      setStatusMessage("Upload the photos somewhere online first, paste that real gallery link, then send it to the client.");
+      return;
+    }
+    setStatusMessage("Opening email with the real gallery link. Hit send in your email app.");
   }
 
   return (
@@ -138,8 +156,9 @@ export default function ClientGalleryPortal() {
                 Clients can view their photos, pick favorites, and request downloads, prints, or canvases.
               </p>
               <p className="mt-5 text-sm leading-7 text-white/55">
-                This page is ready for proofing and ordering. For full real uploads and card payments, connect cloud photo
-                storage and Stripe/checkout next.
+                This page is ready for proofing and ordering. For today, send clients a real hosted gallery link from
+                Dropbox, Google Drive, Pixieset, or another gallery service. Full in-site uploads and card payments can be
+                connected next.
               </p>
               <a
                 href="/#/profile"
@@ -286,11 +305,26 @@ export default function ClientGalleryPortal() {
                 <span className="text-outline italic">preview</span>
               </h2>
               <p className="mt-6 max-w-lg text-sm leading-7 text-white/60">
-                Drop photos here to preview how a client gallery will look, set basic prices, and generate a private
-                link/email for the client. This preview stays on this device until real cloud storage is connected.
+                Drop photos here to preview the look, then paste the real online gallery link you want the client to open.
+                Preview photos stay on this device — they do not get sent or uploaded yet.
               </p>
+              <div className="mt-8 border border-white/15 bg-black/20 p-5 text-xs leading-6 text-white/65">
+                <p className="font-display text-2xl font-black uppercase text-white">Send a real gallery today</p>
+                <ol className="mt-4 list-decimal space-y-2 pl-5">
+                  <li>Upload the photos to Dropbox, Google Drive, Pixieset, or ShootProof.</li>
+                  <li>Copy the share link and paste it into “Real gallery link.”</li>
+                  <li>Click “Email real gallery link” or “Copy client message.”</li>
+                </ol>
+              </div>
             </div>
             <div className="border border-white/20 bg-black/15 p-6">
+              <div className="mb-5 border border-gold/30 bg-gold/10 p-4 text-xs leading-6 text-white/75">
+                <p className="font-semibold text-gold">Important:</p>
+                <p>
+                  The photo chooser below is only a local preview. Clients cannot see those files unless you upload them to
+                  a real online folder and paste that link here.
+                </p>
+              </div>
               <div className="mb-5 grid gap-4 sm:grid-cols-2">
                 <label>
                   <span className="text-[8px] uppercase tracking-cinema text-white/55">Gallery title</span>
@@ -301,11 +335,29 @@ export default function ClientGalleryPortal() {
                   />
                 </label>
                 <label>
+                  <span className="text-[8px] uppercase tracking-cinema text-white/55">Client name</span>
+                  <input
+                    value={clientName}
+                    onChange={(event) => setClientName(event.target.value)}
+                    placeholder="Client name"
+                    className={inputClasses}
+                  />
+                </label>
+                <label>
                   <span className="text-[8px] uppercase tracking-cinema text-white/55">Client email</span>
                   <input
                     value={clientEmail}
                     onChange={(event) => setClientEmail(event.target.value)}
                     placeholder="client@email.com"
+                    className={inputClasses}
+                  />
+                </label>
+                <label className="sm:col-span-2">
+                  <span className="text-[8px] uppercase tracking-cinema text-white/55">Real gallery link</span>
+                  <input
+                    value={realGalleryUrl}
+                    onChange={(event) => setRealGalleryUrl(event.target.value)}
+                    placeholder="Paste Dropbox, Google Drive, Pixieset, or ShootProof link here"
                     className={inputClasses}
                   />
                 </label>
@@ -336,7 +388,9 @@ export default function ClientGalleryPortal() {
               </div>
               <label className="flex min-h-52 cursor-pointer flex-col items-center justify-center border border-dashed border-white/30 bg-black/20 px-6 py-10 text-center transition hover:border-gold">
                 <span className="font-display text-3xl font-black uppercase">Choose photos</span>
-                <span className="mt-3 text-xs leading-6 text-white/55">JPG or PNG. This is a safe preview uploader.</span>
+                <span className="mt-3 text-xs leading-6 text-white/55">
+                  JPG or PNG preview only. These photos are not uploaded to the internet.
+                </span>
                 <input type="file" accept="image/*" multiple onChange={handleUploadPreview} className="sr-only" />
               </label>
               {uploads.length > 0 && (
@@ -362,23 +416,28 @@ export default function ClientGalleryPortal() {
                 </button>
                 <button
                   type="button"
-                  onClick={handleCopyPrivateLink}
+                  onClick={handleCopyClientMessage}
                   className="border border-white/15 px-4 py-3 text-left transition hover:border-gold hover:text-gold"
                 >
-                  2. Copy private link
+                  2. Copy client message
                 </button>
                 <a
                   href={buildPrivateLinkEmail()}
-                  onClick={() => setStatusMessage("Opening email with private link. Hit send in your email app.")}
+                  onClick={handleEmailRealGallery}
                   className="border border-white/15 px-4 py-3 transition hover:border-gold hover:text-gold"
                 >
-                  3. Send private link
+                  3. Email real gallery link
                 </a>
               </div>
               <div className="mt-5 border border-white/15 bg-black/20 p-4 text-xs leading-6 text-white/60">
-                <p className="font-semibold text-white">Private link preview:</p>
-                <p className="break-all text-gold">{privateGalleryLink}</p>
-                <p>Access code: {privateCode || "BASQUIN"}</p>
+                <p className="font-semibold text-white">What the client will receive:</p>
+                {realGalleryUrl.trim() ? (
+                  <p className="break-all text-gold">{realGalleryUrl}</p>
+                ) : (
+                  <p className="text-gold/90">Paste a real online gallery link before sending.</p>
+                )}
+                <p className="mt-3 text-white/45">Future in-site access page: {privateGalleryLink}</p>
+                <p className="text-white/45">Access code placeholder: {privateCode || "BASQUIN"}</p>
                 {statusMessage && <p className="mt-3 text-white/80">{statusMessage}</p>}
               </div>
             </div>
