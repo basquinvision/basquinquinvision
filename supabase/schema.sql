@@ -661,3 +661,91 @@ using (profile_id = auth.uid() or public.is_admin_or_staff());
 create policy "Users can view their invoices"
 on public.invoices for select
 using (profile_id = auth.uid() or public.is_admin_or_staff());
+
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  client_role_id uuid;
+  new_first_name text;
+  new_last_name text;
+  new_display_name text;
+begin
+  new_first_name := new.raw_user_meta_data ->> 'first_name';
+  new_last_name := new.raw_user_meta_data ->> 'last_name';
+  new_display_name := trim(coalesce(new_first_name, '') || ' ' || coalesce(new_last_name, ''));
+
+  insert into public.profiles (
+    id,
+    email,
+    first_name,
+    last_name,
+    display_name,
+    phone,
+    account_type,
+    marketing_consent
+  )
+  values (
+    new.id,
+    new.email,
+    new_first_name,
+    new_last_name,
+    nullif(new_display_name, ''),
+    new.raw_user_meta_data ->> 'phone',
+    coalesce(new.raw_user_meta_data ->> 'account_type', 'client'),
+    coalesce((new.raw_user_meta_data ->> 'marketing_consent')::boolean, false)
+  )
+  on conflict (id) do update set
+    email = excluded.email,
+    first_name = excluded.first_name,
+    last_name = excluded.last_name,
+    display_name = excluded.display_name,
+    phone = excluded.phone,
+    updated_at = now();
+
+  select id into client_role_id from public.roles where name = 'CLIENT';
+
+  if client_role_id is not null then
+    insert into public.user_roles (user_id, role_id)
+    values (new.id, client_role_id)
+    on conflict do nothing;
+  end if;
+
+  insert into public.clients (
+    profile_id,
+    first_name,
+    last_name,
+    email,
+    phone,
+    account_type,
+    marketing_consent,
+    tags
+  )
+  values (
+    new.id,
+    new_first_name,
+    new_last_name,
+    new.email,
+    new.raw_user_meta_data ->> 'phone',
+    'client',
+    coalesce((new.raw_user_meta_data ->> 'marketing_consent')::boolean, false),
+    array['New Account']
+  )
+  on conflict do nothing;
+
+  insert into public.email_preferences (profile_id, marketing_enabled)
+  values (new.id, coalesce((new.raw_user_meta_data ->> 'marketing_consent')::boolean, false))
+  on conflict (profile_id) do nothing;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+
+create trigger on_auth_user_created
+after insert on auth.users
+for each row execute function public.handle_new_user();

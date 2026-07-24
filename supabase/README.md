@@ -43,6 +43,21 @@ This folder is the Phase 1 backend foundation for Basquin Vision.
 - Downloads should be generated through short-lived signed URLs after server-side permission checks.
 - Never expose permanent public URLs to original client photographs.
 
+## Live data bridge
+
+The frontend now includes Supabase REST helpers. After environment variables are added:
+
+- `/login` and `/signup` use Supabase Auth.
+- New auth users automatically get:
+  - a `profiles` row
+  - CLIENT role
+  - a `clients` CRM row
+  - default email preferences
+- `/portal` attempts to load the signed-in user’s projects, galleries, favorites, downloads, orders, and invoices.
+- `/admin` attempts to load dashboard metrics, products, downloads, media metadata, invoices, and orders.
+
+Until keys are added, the pages stay in safe demo mode.
+
 ## Security note
 
 Never put the Supabase service-role key, Stripe secret key, or webhook secrets in frontend files.
