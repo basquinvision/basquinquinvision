@@ -74,3 +74,34 @@ export const canvasPricing = [
   ["24x36", "$449"],
   ["30x40", "$599"],
 ];
+
+export const mediaPipeline = [
+  {
+    title: "Originals protected",
+    status: "Private bucket",
+    detail: "Full-resolution photos and videos stay private. Clients receive signed download links only when approved.",
+  },
+  {
+    title: "Preview images",
+    status: "Fast gallery viewing",
+    detail: "Optimized previews load inside the gallery so large collections do not drag on phones.",
+  },
+  {
+    title: "Thumbnails",
+    status: "Mobile-first grid",
+    detail: "Small thumbnails power the gallery grid, favorites, selections, and admin review workflow.",
+  },
+  {
+    title: "Download audit",
+    status: "Tracked",
+    detail: "Download type, resolution, user, gallery, and timestamp are saved for client delivery history.",
+  },
+];
+
+export const selectionWorkflows = [
+  "Favorites",
+  "Album Choices",
+  "Retouch These",
+  "Print Choices",
+  "Final Selections",
+];
