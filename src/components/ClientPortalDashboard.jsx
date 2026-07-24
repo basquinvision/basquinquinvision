@@ -1,13 +1,26 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import BackendNotice from "./BackendNotice";
 import { ArrowIcon } from "./Icons";
-import { clearSession, getSessionUser } from "../lib/authClient";
+import { clearSession, getSessionUser, getStoredSession } from "../lib/authClient";
+import { isBackendConfigured } from "../lib/platformConfig";
+import { fetchClientPortalData } from "../lib/dataClient";
 import { portalNav, demoProjects, selectionWorkflows } from "../data/platformDemoData";
 import { applySeo } from "../utils/seo";
 
 export default function ClientPortalDashboard() {
   const user = getSessionUser();
+  const [portalData, setPortalData] = useState({
+    loading: false,
+    error: "",
+    mode: "demo",
+    projects: demoProjects,
+    galleries: [],
+    favorites: [],
+    downloads: [],
+    orders: [],
+    invoices: [],
+  });
 
   useEffect(() => {
     applySeo({
@@ -16,6 +29,42 @@ export default function ClientPortalDashboard() {
       keywords: ["Basquin Vision client portal", "private gallery dashboard", "South Florida photographer client login"],
       path: "/portal",
     });
+  }, []);
+
+  useEffect(() => {
+    const session = getStoredSession();
+    if (!isBackendConfigured() || !session?.access_token) return;
+
+    let cancelled = false;
+    setPortalData((current) => ({ ...current, loading: true, error: "" }));
+
+    fetchClientPortalData()
+      .then((data) => {
+        if (cancelled) return;
+        setPortalData({
+          loading: false,
+          error: "",
+          mode: "live",
+          projects: data.projects.length ? data.projects : [],
+          galleries: data.galleries,
+          favorites: data.favorites,
+          downloads: data.downloads,
+          orders: data.orders,
+          invoices: data.invoices,
+        });
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        setPortalData((current) => ({
+          ...current,
+          loading: false,
+          error: error.message,
+        }));
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   function handleLogout() {
@@ -76,10 +125,18 @@ export default function ClientPortalDashboard() {
                     <p className="text-[9px] uppercase tracking-cinema text-white/40">My Projects</p>
                     <h3 className="font-display text-4xl font-black uppercase">Active work</h3>
                   </div>
-                  <p className="text-[9px] uppercase tracking-cinema text-white/35">Demo data</p>
+                  <p className="text-[9px] uppercase tracking-cinema text-white/35">
+                    {portalData.loading ? "Loading..." : portalData.mode === "live" ? "Live database" : "Demo data"}
+                  </p>
                 </div>
-                <div className="grid gap-4 md:grid-cols-3">
-                  {demoProjects.map((project) => (
+                {portalData.error && (
+                  <p className="mb-4 border border-gold/30 bg-gold/10 p-4 text-sm leading-6 text-white/70">
+                    Database connected, but this account may not have assigned projects yet: {portalData.error}
+                  </p>
+                )}
+                {portalData.projects.length ? (
+                  <div className="grid gap-4 md:grid-cols-3">
+                    {portalData.projects.map((project) => (
                     <article key={project.name} className="overflow-hidden border border-white/15 bg-white/[.03]">
                       <img src={project.image} alt={project.name} className="aspect-[4/3] w-full object-cover" />
                       <div className="p-5">
@@ -92,15 +149,28 @@ export default function ClientPortalDashboard() {
                         </div>
                       </div>
                     </article>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="border border-white/15 bg-white/[.03] p-6 text-sm leading-7 text-white/55">
+                    No projects assigned yet. Once admin creates a project and assigns this account, it will show up here.
+                  </div>
+                )}
               </section>
 
               <section className="mt-8 grid gap-4 md:grid-cols-4">
-                {["Favorites", "Downloads", "Orders", "Invoices"].map((item) => (
+                {[
+                  ["Favorites", portalData.favorites.length],
+                  ["Downloads", portalData.downloads.length],
+                  ["Orders", portalData.orders.length],
+                  ["Invoices", portalData.invoices.length],
+                ].map(([item, count]) => (
                   <div key={item} className="border border-white/15 bg-white/[.03] p-5">
                     <p className="text-[9px] uppercase tracking-cinema text-gold">{item}</p>
-                    <p className="mt-4 text-sm leading-6 text-white/55">Ready for database-backed records in Phase 1.</p>
+                    <p className="mt-4 font-display text-4xl font-black uppercase leading-none">{portalData.mode === "live" ? count : "—"}</p>
+                    <p className="mt-3 text-sm leading-6 text-white/55">
+                      {portalData.mode === "live" ? "Live record count." : "Ready for database-backed records."}
+                    </p>
                   </div>
                 ))}
               </section>

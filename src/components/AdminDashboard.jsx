@@ -1,10 +1,21 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import BackendNotice from "./BackendNotice";
 import { adminMetrics, adminNav, canvasPricing, mediaPipeline, selectionWorkflows } from "../data/platformDemoData";
 import { applySeo } from "../utils/seo";
+import { fetchAdminDashboardData } from "../lib/dataClient";
+import { getStoredSession } from "../lib/authClient";
+import { isBackendConfigured } from "../lib/platformConfig";
 
 export default function AdminDashboard() {
+  const [adminData, setAdminData] = useState({
+    loading: false,
+    error: "",
+    mode: "demo",
+    metrics: adminMetrics,
+    products: [],
+  });
+
   useEffect(() => {
     applySeo({
       title: "Admin Dashboard | Basquin Vision",
@@ -12,6 +23,38 @@ export default function AdminDashboard() {
       keywords: ["Basquin Vision admin", "client CRM", "photography backend", "media production platform"],
       path: "/admin",
     });
+  }, []);
+
+  useEffect(() => {
+    const session = getStoredSession();
+    if (!isBackendConfigured() || !session?.access_token) return;
+
+    let cancelled = false;
+    setAdminData((current) => ({ ...current, loading: true, error: "" }));
+
+    fetchAdminDashboardData()
+      .then((data) => {
+        if (cancelled) return;
+        setAdminData({
+          loading: false,
+          error: "",
+          mode: "live",
+          metrics: data.metrics,
+          products: data.products,
+        });
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        setAdminData((current) => ({
+          ...current,
+          loading: false,
+          error: error.message,
+        }));
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -54,7 +97,12 @@ export default function AdminDashboard() {
               </div>
 
               <section id="dashboard" className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {adminMetrics.map((metric) => (
+                {adminData.error && (
+                  <div className="border border-gold/30 bg-gold/10 p-5 text-sm leading-6 text-white/70 md:col-span-2 xl:col-span-3">
+                    Database connected, but this account may need ADMIN/STAFF permission: {adminData.error}
+                  </div>
+                )}
+                {adminData.metrics.map((metric) => (
                   <article key={metric.label} className="border border-white/15 bg-white/[.03] p-5">
                     <p className="text-[9px] uppercase tracking-cinema text-white/45">{metric.label}</p>
                     <p className="mt-4 font-display text-5xl font-black uppercase leading-none text-gold">{metric.value}</p>
@@ -79,15 +127,25 @@ export default function AdminDashboard() {
                   <p className="text-[9px] uppercase tracking-cinema text-gold">Canvas pricing table</p>
                   <h3 className="mt-3 font-display text-3xl font-black uppercase">Database stored</h3>
                   <div className="mt-5 grid gap-2">
-                    {canvasPricing.map(([size, price]) => (
-                      <div key={size} className="flex items-center justify-between border-b border-white/10 py-2 text-sm">
+                    {(adminData.mode === "live" && adminData.products.length
+                      ? adminData.products.map((product) => [
+                          product.size_label,
+                          `$${Number(product.sale_price || product.retail_price || 0).toLocaleString()}`,
+                          product.gross_margin_dollars,
+                        ])
+                      : canvasPricing
+                    ).map(([size, price, margin]) => (
+                      <div key={size} className="flex items-center justify-between gap-4 border-b border-white/10 py-2 text-sm">
                         <span>{size}</span>
-                        <span className="font-bold text-gold">{price}</span>
+                        <span className="text-right">
+                          <span className="font-bold text-gold">{price}</span>
+                          {margin !== undefined && <span className="ml-2 text-xs text-white/40">margin ${Number(margin).toLocaleString()}</span>}
+                        </span>
                       </div>
                     ))}
                   </div>
                   <p className="mt-5 text-xs leading-6 text-white/55">
-                    Supplier cost, retail price, sale price, markup, and gross margin are calculated in the database view.
+                    {adminData.mode === "live" ? "Showing live database pricing." : "Supplier cost, retail price, sale price, markup, and gross margin are calculated in the database view."}
                   </p>
                 </div>
               </section>
